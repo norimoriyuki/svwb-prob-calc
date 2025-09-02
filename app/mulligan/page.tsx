@@ -24,15 +24,15 @@ function zeroHitHypergeometricRatio(total: number, targetInDeck: number, draws: 
   return product;
 }
 
-// Keep case probability: 1 - noHit(Initial 4) * noHit(Mulligan l) * noHit(Later m)
+// Keep case (conditioned on initial 4 having zero targets):
+// P(no hit) = noHit(Mulligan l | 36 with n) * noHit(Later m | 36 with n)
 function probabilityAtLeastOneKeep(n: number, l: number, m: number): number {
   const nn = clamp(Math.floor(n), 0, 40);
   const ll = clamp(Math.floor(l), 0, 4);
   const mm = clamp(Math.floor(m), 0, 40);
-  const pNoInitial = zeroHitHypergeometricRatio(40, nn, 4);
   const pNoMulligan = zeroHitHypergeometricRatio(36, nn, ll);
   const pNoDraws = zeroHitHypergeometricRatio(36, nn, mm);
-  const pNo = pNoInitial * pNoMulligan * pNoDraws;
+  const pNo = pNoMulligan * pNoDraws;
   return clamp(1 - pNo, 0, 1);
 }
 
@@ -194,10 +194,10 @@ export default function MulliganKeepPage() {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }, [mMin, mMax]);
 
-  // Curves for l = 0..3 (4本)
-  const lCurves = [0, 1, 2, 3];
-  // Table rows for l = 0..1
-  const lRows = [0, 1];
+  // Curves for l = 0..4 (5本)
+  const lCurves = [0, 1, 2, 3, 4];
+  // Table rows for l = 0..4 (常に5行)
+  const lRows = [0, 1, 2, 3, 4];
 
   const chartWidth = 720;
   const chartHeight = 320;
@@ -206,14 +206,15 @@ export default function MulliganKeepPage() {
   const innerHeight = chartHeight - margin.top - margin.bottom;
 
   function colorForL(l: number): string {
-    const palette = ["#111827", "#6b7280", "#9ca3af", "#374151"]; // grayscale variety
+    // High-contrast, colorblind-friendly (Okabe-Ito inspired) palette
+    const palette = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7"]; // blue, orange, green, vermillion, purple
     return palette[l % palette.length];
   }
 
   return (
     <main>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 600 }}>Shadowverse：Worlds Beyond 計算機（対象は常にキープ）</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 600 }}>Shadowverse：Worlds Beyond 探しに行く行動計算機</h1>
 
         {/* 条件設定 */}
         <section style={{ display: 'flex', flexWrap: 'wrap', gap: 16, border: '1px solid #e5e7eb', background: '#ffffff', borderRadius: 12, padding: 12 }}>
@@ -320,7 +321,7 @@ export default function MulliganKeepPage() {
               <tbody>
                 {lRows.map((l) => (
                   <tr key={`row-l-${l}`}>
-                    <th style={{ border: '1px solid #e5e7eb', padding: 6, background: '#f9fafb', textAlign: 'right', position: 'sticky', left: 0 }}>l={l}</th>
+                    <th style={{ border: '1px solid #e5e7eb', padding: 6, background: '#f9fafb', textAlign: 'right', position: 'sticky', left: 0 }}>{l}枚引き直し</th>
                     {mValues.map((m) => (
                       <td key={`cell-${l}-${m}`} style={{ border: '1px solid #e5e7eb', padding: 6, textAlign: 'right' }}>
                         {(probabilityAtLeastOneKeep(n, l, m) * 100).toFixed(2)}%
