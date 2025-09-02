@@ -437,6 +437,18 @@ export default function Home() {
             <div>Q_m = C(36 - n, m) / C(36, m)</div>
           </div>
         </section>
+        
+        {/* フッターリンク */}
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <a
+            href="https://note.com/maddogmtg/n/n3edfb7fc7f10"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#2563eb', textDecoration: 'underline' }}
+          >
+            このページについて
+          </a>
+        </div>
       </div>
     </main>
   );
