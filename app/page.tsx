@@ -339,7 +339,11 @@ export default function Home() {
 
         {/* 結果のグラフエレメント */}
         <section style={{ border: '1px solid #e5e7eb', background: '#ffffff', borderRadius: 12, padding: 12 }}>
-          <svg width={chartWidth} height={chartHeight} style={{ display: 'block', margin: '0 auto', background: 'transparent' }}>
+          <svg
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+            preserveAspectRatio="xMidYMid meet"
+            style={{ display: 'block', margin: '0 auto', width: '100%', height: 'auto', maxWidth: '100%', background: 'transparent' }}
+          >
             <g transform={`translate(${margin.left},${margin.top})`}>
               <line x1={0} y1={innerHeight} x2={innerWidth} y2={innerHeight} stroke="#9ca3af" />
               <line x1={0} y1={0} x2={0} y2={innerHeight} stroke="#9ca3af" />
