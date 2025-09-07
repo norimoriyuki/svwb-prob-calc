@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SVWB確率計算機",
   description: "SVWB確率計算機",
+  themeColor: "#111111",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
